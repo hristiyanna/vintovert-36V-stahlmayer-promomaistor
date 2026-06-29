@@ -480,39 +480,6 @@ body{
 }
 
 /* ===== TIME SELECTION ===== */
-.time-question{
-  font-size:15px;
-  margin-bottom:12px;
-  line-height:1.4;
-}
-.time-buttons{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-.time-btn{
-  background:#fff;
-  color:var(--green-dark);
-  border:2px solid #fff;
-  border-radius:8px;
-  padding:10px 20px;
-  font-family:'Nunito',sans-serif;
-  font-size:15px;
-  font-weight:800;
-  cursor:pointer;
-  transition:background 0.2s, color 0.2s;
-}
-.time-btn:hover{
-  background:var(--yellow);
-  border-color:var(--yellow);
-}
-.time-confirmed{
-  font-size:15px;
-  margin-top:10px;
-  opacity:0.9;
-}
-
 /* ===== FADE IN ===== */
 .fade-up{
   opacity:0;
@@ -551,11 +518,10 @@ body{
         <input type="tel" id="phoneTop" name="phone" placeholder="08X XXX XXX" required>
       </div>
       <div class="form-field">
-        <label for="qtyTop">Количество</label>
-        <select id="qtyTop" name="qty">
-          <option value="1">1 брой</option>
-          <option value="2">2 броя</option>
-          <option value="3">3 броя</option>
+        <label for="timeTop">Кога да ви се обадим?</label>
+        <select id="timeTop" name="preferred_time">
+          <option value="Сутринта 9-12">&#9788; Сутринта 9-12</option>
+          <option value="Следобед 12-17">&#9790; Следобед 12-17</option>
         </select>
       </div>
       <input type="hidden" name="product" value="Винтоверт STAHLMAYER 36V BLACK + 40 бр. инструменти">
@@ -564,18 +530,7 @@ body{
       <div class="form-note">Плащате при получаване &bull; Без предплащане</div>
     </form>
     <div class="success-msg" id="successTop">
-      <div id="successTopContent">
-        &#10003; Поръчката е приета!<br>
-        <div class="time-question">Кога да те потърсим за потвърждение?</div>
-        <div class="time-buttons">
-          <button class="time-btn" onclick="confirmTime('top','Сутринта 9-12')">&#9788; Сутринта 9-12</button>
-          <button class="time-btn" onclick="confirmTime('top','Следобед 12-17')">&#9790; Следобед 12-17</button>
-        </div>
-      </div>
-      <div id="successTopDone" style="display:none;">
-        &#10003; Поръчката е приета!<br>
-        <div class="time-confirmed">Ще се свържем с теб <strong id="timeChosenTop"></strong>.</div>
-      </div>
+      &#10003; Поръчката е приета! Ще се свържем с теб в избрания час.
     </div>
   </div>
 </div>
@@ -771,11 +726,10 @@ body{
         <input type="tel" id="phoneBottom" name="phone" placeholder="08X XXX XXX" required>
       </div>
       <div class="form-field">
-        <label for="qtyBottom">Количество</label>
-        <select id="qtyBottom" name="qty">
-          <option value="1">1 брой</option>
-          <option value="2">2 броя</option>
-          <option value="3">3 броя</option>
+        <label for="timeBottom">Кога да ви се обадим?</label>
+        <select id="timeBottom" name="preferred_time">
+          <option value="Сутринта 9-12">&#9788; Сутринта 9-12</option>
+          <option value="Следобед 12-17">&#9790; Следобед 12-17</option>
         </select>
       </div>
       <input type="hidden" name="product" value="Винтоверт STAHLMAYER 36V BLACK + 40 бр. инструменти">
@@ -784,18 +738,7 @@ body{
       <div class="form-note">Плащате при получаване &bull; Без предплащане</div>
     </form>
     <div class="success-msg" id="successBottom">
-      <div id="successBottomContent">
-        &#10003; Поръчката е приета!<br>
-        <div class="time-question">Кога да те потърсим за потвърждение?</div>
-        <div class="time-buttons">
-          <button class="time-btn" onclick="confirmTime('bottom','Сутринта 9-12')">&#9788; Сутринта 9-12</button>
-          <button class="time-btn" onclick="confirmTime('bottom','Следобед 12-17')">&#9790; Следобед 12-17</button>
-        </div>
-      </div>
-      <div id="successBottomDone" style="display:none;">
-        &#10003; Поръчката е приета!<br>
-        <div class="time-confirmed">Ще се свържем с теб <strong id="timeChosenBottom"></strong>.</div>
-      </div>
+      &#10003; Поръчката е приета! Ще се свържем с теб в избрания час.
     </div>
   </div>
 </div>
@@ -854,25 +797,6 @@ async function submitForm(e, which){
 }
 
 // Time confirmation
-async function confirmTime(which, timeSlot){
-  const contentId = which === 'top' ? 'successTopContent' : 'successBottomContent';
-  const doneId    = which === 'top' ? 'successTopDone'    : 'successBottomDone';
-  const chosenId  = which === 'top' ? 'timeChosenTop'     : 'timeChosenBottom';
-
-  document.getElementById(contentId).style.display = 'none';
-  document.getElementById(doneId).style.display = 'block';
-  document.getElementById(chosenId).textContent = timeSlot + 'ч.';
-
-  // Изпращаме часа към Web3Forms
-  const fd = new FormData();
-  fd.append('access_key', 'fb69d17e-9aee-47cb-9d48-a870aa6d073b');
-  fd.append('subject', 'Потвърждение на час – Акумулаторен Винтоверт');
-  fd.append('предпочитан_час', timeSlot);
-  fd.append('продукт', 'STAHLMAYER Акумулаторен Винтоверт 36V');
-  try {
-    await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-  } catch(e) {}
-}
 
 // Intersection Observer for fade-up animations
 const observer = new IntersectionObserver((entries) => {
