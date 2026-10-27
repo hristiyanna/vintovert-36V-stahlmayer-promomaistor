@@ -902,7 +902,8 @@ async function submitForm(e, which){
       fbq('track', 'Purchase', {value: 35.00, currency: 'EUR'});
       form.style.display = 'none';
       const successEl = document.getElementById(successId);
-      successEl.style.display = 'block';
+      // Keep the original success box hidden — #call_back is the only thank-you text
+      successEl.style.display = 'none';
 
       // #call_back exists from page load (so GTM is already observing it).
       // Expand it into the viewport — Element Visibility misses elements created after load.
